@@ -1,0 +1,37 @@
+{
+    "name": "layered/oauth2-wordpress-com",
+    "description": "WordPress.com OAuth 2.0 Client Provider for League OAuth2 Client",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrei Igna",
+            "email": "andrei.igna@layered.studio"
+        }
+    ],
+    "keywords": [
+        "oauth",
+        "oauth2",
+        "client",
+        "authorization",
+        "authentication",
+        "wordpress.com",
+        "wordpress"
+    ],
+    "require": {
+        "league/oauth2-client": "~2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Layered\\OAuth2\\Client\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Layered\\OAuth2\\Client\\Test\\": "test/src/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "check": "phpcs src --standard=psr2 -sp"
+    }
+}
