@@ -81,7 +81,7 @@ class WordPressCom extends AbstractProvider
 	 *
 	 * @return void
 	 */
-	protected function checkResponse(ResponseInterface $response, array $data)
+	protected function checkResponse(ResponseInterface $response, $data)
 	{
 		if (!empty($data['error'])) {
 			$message = $data['error'].': '.$data['error_description'];            

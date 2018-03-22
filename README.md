@@ -1,10 +1,10 @@
 # WordPress.com provider for OAuth 2.0 Client
 
-This package provides WordPress.com OAuth 2.0 support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
+This package provides [WordPress.com OAuth 2.0](https://developer.wordpress.com/docs/oauth2/) support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
 
 ## Installation
 
-To install, use composer:
+Use composer to install:
 
 ```
 composer require layered/oauth2-wordpress-com
@@ -20,52 +20,59 @@ Usage is the same as The League's OAuth client, using `\Layered\OAuth2\Client\Pr
 $provider = new \Layered\OAuth2\Client\Provider\WordPressCom([
 	'clientId'		=>	'{wordpresscom-client-id}',
 	'clientSecret'	=>	'{wordpresscom-client-secret}',
-	'redirectUri'	=>	'https://example.com/callback-url'
+	'redirectUri'	=>	'https://example.com/callback-url',
+	'blogId'		=>	'1783'						// optional - request auth for a specific blog
+	'blogUrl'		=>	'https://example.com'		// optional - request auth for a specific blog
 ]);
 
 if (isset($_GET['error'])) {
 
-    // Got an error, probably user denied access
-    exit('Got error: ' . htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8'));
+	// Got an error, probably user denied access
+	exit('Got error: ' . htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8'));
 
 } elseif (!isset($_GET['code'])) {
 
-    // If we don't have an authorization code then get one
-    $authUrl = $provider->getAuthorizationUrl();
-    $_SESSION['oauth2state'] = $provider->getState();
-    header('Location: '.$authUrl);
-    exit;
+	// If we don't have an authorization code then get one
+	$authUrl = $provider->getAuthorizationUrl();
+	$_SESSION['oauth2state'] = $provider->getState();
+	header('Location: '.$authUrl);
+	exit;
 
 // Check given state against previously stored one to mitigate CSRF attack
 } elseif (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
 
-    unset($_SESSION['oauth2state']);
-    exit('Invalid state');
+	unset($_SESSION['oauth2state']);
+	exit('Invalid state');
 
 } else {
 
-    // Try to get an access token (using the authorization code grant)
-    $token = $provider->getAccessToken('authorization_code', [
-        'code' => $_GET['code']
-    ]);
+	// Try to get an access token (using the authorization code grant)
+	$token = $provider->getAccessToken('authorization_code', [
+		'code' => $_GET['code']
+	]);
 
-    // Optional: Now you have a token you can look up a users profile data
-    try {
+	// If auth was for a single site or global access, token contains extra blog info
+	$tokenValues = $token->getValues();
+	echo 'Blog ID: ' . $tokenValues['blog_id'] . '<br>';
+	echo 'Blog URL: ' . $tokenValues['blog_url'] . '<br>';
 
-        // We got an access token, let's now get the user's details
-        $user = $provider->getResourceOwner($token);
+	// Get user profile data
+	try {
 
-        // Use these details to create a new profile
-        printf('Hello %s!', $user->getName());
+		// We got an access token, let's now get the user's details
+		$user = $provider->getResourceOwner($token);
 
-    } catch (Exception $e) {
+		// Use these details to create a new profile
+		printf('Hello %s!', $user->getName());
 
-        // Failed to get user details
-        exit('Something went wrong: ' . $e->getMessage());
-    }
+	} catch (\Exception $e) {
 
-    // Use this to interact with an API on the users behalf
-    echo $token->getToken();
+		// Failed to get user details
+		exit('Something went wrong: ' . $e->getMessage());
+	}
+
+	// Use this to interact with an API on the users behalf
+	echo $token->getToken();
 }
 ```
 
@@ -79,7 +86,7 @@ When creating the authorization URL, specify the scope your application may auth
 
 ```php
 $provider->getAuthorizationUrl([
-	'scope'	=>	['auth']
+	'scope'	=>	'auth'
 ]);
 ```
 
@@ -98,4 +105,3 @@ $ ./vendor/bin/phpunit
 ## License
 
 The MIT License (MIT). Please see [License File](https://github.com/LayeredStudio/oauth2-wordpress-com/blob/master/LICENSE) for more information.
-
