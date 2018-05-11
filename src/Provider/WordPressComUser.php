@@ -115,6 +115,16 @@ class WordPressComUser implements ResourceOwnerInterface
 	}
 
 	/**
+	 * Get resource owner language
+	 *
+	 * @return string|null
+	 */
+	public function getLanguage()
+	{
+		return $this->getValueByKey($this->response, 'language');
+	}
+
+	/**
 	 * Return all of the owner details available as an array.
 	 *
 	 * @return array
