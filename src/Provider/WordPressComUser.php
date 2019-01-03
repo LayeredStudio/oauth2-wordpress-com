@@ -1,5 +1,4 @@
 <?php 
-
 namespace Layered\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
@@ -19,7 +18,7 @@ class WordPressComUser implements ResourceOwnerInterface
 	/**
 	 * Creates new resource owner.
 	 */
-	public function __construct(array $response = array())
+	public function __construct(array $response)
 	{
 		$this->response = $response;
 	}

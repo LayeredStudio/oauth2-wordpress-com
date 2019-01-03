@@ -1,5 +1,4 @@
 <?php
-
 namespace Layered\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
@@ -13,14 +12,10 @@ class WordPressCom extends AbstractProvider
 	use BearerAuthorizationTrait;
 
 	/**
-	 * @var string
+	 * @var string If set, this will be sent to WordPress.com as the "blog" parameter.
+	 * @link https://developer.wordpress.com/docs/oauth2/#receiving-an-access-token
 	 */
-	protected $blogId;
-
-	/**
-	 * @var string
-	 */
-	protected $blogUrl;
+	protected $blog;
 
 	/**
 	 * Get authorization url to begin OAuth flow
@@ -29,7 +24,7 @@ class WordPressCom extends AbstractProvider
 	 */
 	public function getBaseAuthorizationUrl()
 	{
-		return 'https://public-api.wordpress.com/oauth2/authorize';        
+		return 'https://public-api.wordpress.com/oauth2/authorize';
 	}
 
 	/**
@@ -39,7 +34,7 @@ class WordPressCom extends AbstractProvider
 	 */
 	public function getBaseAccessTokenUrl(array $params)
 	{
-		return 'https://public-api.wordpress.com/oauth2/token';        
+		return 'https://public-api.wordpress.com/oauth2/token';
 	}
 
 	protected function getAuthorizationParameters(array $options)
@@ -47,7 +42,7 @@ class WordPressCom extends AbstractProvider
 		$params = array_merge(
 			parent::getAuthorizationParameters($options),
 			array_filter([
-				'blog'	=> $this->blogId ?: $this->blogUrl
+				'blog'	=>	$this->blog
 			])
 		);
 		return $params;
@@ -68,12 +63,14 @@ class WordPressCom extends AbstractProvider
 	 * - 'auth' for authentication only, grants access to /me endpoints
 	 * - 'global' access to all user's sites
 	 * - '' (empty) access to a single blog, specified in request or chosen by user
+	 * @link https://developer.wordpress.com/docs/oauth2/#receiving-an-access-token
+	 * @link https://developer.wordpress.com/docs/wpcc/
 	 *
 	 * @return array
 	 */
 	protected function getDefaultScopes()
 	{
-		return [];
+		return ['auth'];
 	}
 
 	/**
@@ -84,8 +81,8 @@ class WordPressCom extends AbstractProvider
 	protected function checkResponse(ResponseInterface $response, $data)
 	{
 		if (!empty($data['error'])) {
-			$message = $data['error'].': '.$data['error_description'];            
-			throw new IdentityProviderException($message, $response->getStatusCode(), $data);
+			$message = $data['error_description'] . ' (' . $data['error'] . ')';
+			throw new IdentityProviderException($message, 0, $data);
 		}
 	}
 
