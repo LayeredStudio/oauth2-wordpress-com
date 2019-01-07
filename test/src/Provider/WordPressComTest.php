@@ -2,7 +2,9 @@
 namespace Layered\OAuth2\Client\Test\Provider;
 
 use Layered\OAuth2\Client\Provider\WordPressCom;
+use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use PHPUnit\Framework\TestCase;
 use Mockery as m;
@@ -60,7 +62,7 @@ final class WordPressComTest extends TestCase
 
 		$token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
 
-		$this->assertInstanceOf('League\OAuth2\Client\Token\AccessTokenInterface', $token);
+		$this->assertInstanceOf(AccessTokenInterface::class, $token);
 		$this->assertEquals('mock_access_token', $token->getToken());
 		$this->assertNull($token->getExpires());
 		$this->assertNull($token->getRefreshToken());
@@ -98,7 +100,7 @@ final class WordPressComTest extends TestCase
 
 		$user = $this->provider->getResourceOwner($this->getMockToken());
 
-		$this->assertInstanceOf('League\OAuth2\Client\Provider\ResourceOwnerInterface', $user);
+		$this->assertInstanceOf(ResourceOwnerInterface::class, $user);
 		$this->assertEquals($mockUser['ID'], $user->getId());
 		$this->assertEquals($mockUser['username'], $user->getUsername());
 		$this->assertEquals($mockUser['email'], $user->getEmail());
