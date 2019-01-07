@@ -55,7 +55,7 @@ class WordPressCom extends AbstractProvider
 	 */
 	public function getResourceOwnerDetailsUrl(AccessToken $token)
 	{
-		return 'https://public-api.wordpress.com/rest/v1/me/';
+		return 'https://public-api.wordpress.com/rest/v1/me';
 	}
 
 	/**
