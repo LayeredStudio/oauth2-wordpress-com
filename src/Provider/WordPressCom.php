@@ -7,8 +7,7 @@ use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
 use Psr\Http\Message\ResponseInterface;
 
-class WordPressCom extends AbstractProvider
-{
+class WordPressCom extends AbstractProvider {
 	use BearerAuthorizationTrait;
 
 	/**
@@ -22,8 +21,7 @@ class WordPressCom extends AbstractProvider
 	 *
 	 * @return string
 	 */
-	public function getBaseAuthorizationUrl()
-	{
+	public function getBaseAuthorizationUrl() {
 		return 'https://public-api.wordpress.com/oauth2/authorize';
 	}
 
@@ -32,13 +30,17 @@ class WordPressCom extends AbstractProvider
 	 *
 	 * @return string
 	 */
-	public function getBaseAccessTokenUrl(array $params)
-	{
+	public function getBaseAccessTokenUrl(array $params) {
 		return 'https://public-api.wordpress.com/oauth2/token';
 	}
 
-	protected function getAuthorizationParameters(array $options)
-	{
+	/**
+	 * Returns authorization parameters based on provided options.
+	 *
+	 * @param  array $options
+	 * @return array Authorization parameters
+	 */
+	protected function getAuthorizationParameters(array $options) {
 		$params = array_merge(
 			parent::getAuthorizationParameters($options),
 			array_filter([
@@ -53,8 +55,7 @@ class WordPressCom extends AbstractProvider
 	 *
 	 * @return string
 	 */
-	public function getResourceOwnerDetailsUrl(AccessToken $token)
-	{
+	public function getResourceOwnerDetailsUrl(AccessToken $token) {
 		return 'https://public-api.wordpress.com/rest/v1/me';
 	}
 
@@ -68,8 +69,7 @@ class WordPressCom extends AbstractProvider
 	 *
 	 * @return array
 	 */
-	protected function getDefaultScopes()
-	{
+	protected function getDefaultScopes() {
 		return ['auth'];
 	}
 
@@ -78,8 +78,7 @@ class WordPressCom extends AbstractProvider
 	 *
 	 * @return void
 	 */
-	protected function checkResponse(ResponseInterface $response, $data)
-	{
+	protected function checkResponse(ResponseInterface $response, $data) {
 		if (!empty($data['error'])) {
 			$message = $data['error_description'] . ' (' . $data['error'] . ')';
 			throw new IdentityProviderException($message, 0, $data);
@@ -91,8 +90,8 @@ class WordPressCom extends AbstractProvider
 	 *
 	 * @return League\OAuth2\Client\Provider\ResourceOwnerInterface
 	 */
-	protected function createResourceOwner(array $response, AccessToken $token)
-	{
+	protected function createResourceOwner(array $response, AccessToken $token) {
 		return new WordPressComUser($response);
 	}
+
 }

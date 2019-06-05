@@ -1,21 +1,14 @@
 {
     "name": "layered/oauth2-wordpress-com",
     "description": "WordPress.com OAuth 2.0 Client Provider for League OAuth2 Client",
+    "type": "library",
+    "keywords": [ "oauth", "oauth2", "client", "authorization", "authentication", "wordpress.com", "wordpress" ],
     "license": "MIT",
     "authors": [
         {
             "name": "Andrei Igna",
-            "email": "andrei.igna@layered.studio"
+            "email": "andrei@laye.red"
         }
-    ],
-    "keywords": [
-        "oauth",
-        "oauth2",
-        "client",
-        "authorization",
-        "authentication",
-        "wordpress.com",
-        "wordpress"
     ],
     "require": {
         "league/oauth2-client": "^2.0"
