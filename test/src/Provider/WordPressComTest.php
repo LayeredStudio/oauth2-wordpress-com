@@ -1,4 +1,4 @@
-<?php 
+<?php declare(strict_types=1);
 namespace Layered\OAuth2\Client\Test\Provider;
 
 use Layered\OAuth2\Client\Provider\WordPressCom;
@@ -13,7 +13,7 @@ final class WordPressComTest extends TestCase
 {
 	protected $provider;
 
-	protected function setUp()
+	protected function setUp(): void
 	{
 		$this->provider = new WordPressCom([
 			'clientId'		=>	'mock_client_id',
@@ -107,9 +107,6 @@ final class WordPressComTest extends TestCase
 		$this->assertNotEmpty($user->getAvatarUrl());
 	}
 
-	/**
-	 * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
-	 */
 	public function testUserDataFails()
 	{
 		$userResponse = m::mock('Psr\Http\Message\ResponseInterface');
@@ -121,6 +118,7 @@ final class WordPressComTest extends TestCase
 		$client->shouldReceive('send')->once()->andReturn($userResponse);
 		$this->provider->setHttpClient($client);
 
+		$this->expectException(IdentityProviderException::class);
 		$user = $this->provider->getResourceOwner($this->getMockToken());
 	}
 
@@ -135,7 +133,7 @@ final class WordPressComTest extends TestCase
 		]);
 	}
 
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 		parent::tearDown();
